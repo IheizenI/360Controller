@@ -34,7 +34,6 @@
 #import "MyAnalogStick.h"
 
 #define NO_ITEMS @"No devices found"
-#define SystemPolicyNeeded 27
 
 @interface NSLayoutConstraint (Description)
 
@@ -1017,32 +1016,17 @@ static void callbackHandleDevice(void *param,io_iterator_t iterator)
         // successful execution
         if (kAENullEvent != [returnDescriptor descriptorType])
         {
-            /* Uncomment this to handle the returned values */
-            // script returned an AppleScript result
-            if (cAEList == [returnDescriptor descriptorType])
-            {
-                // result is a list of other descriptors
-            }
-            else
-            {
-                // coerce the result to the appropriate ObjC type
-                int retVal = [returnDescriptor int32Value];
-                if (retVal == SystemPolicyNeeded) {
-                    NSAlert *alrt = [[NSAlert alloc] init];
-                    alrt.alertStyle = NSAlertStyleCritical;
-                    alrt.messageText = NSLocalizedStringFromTableInBundle(@"System Policy Needed", @"Localizable", self.bundle, @"System Policy Needed for kext loading");
-                    alrt.informativeText = NSLocalizedStringFromTableInBundle(@"In order to use this software, your computer must be able to load the kernel extension driver.", @"Localizable", self.bundle, @""); //TODO: better description
-                    [alrt addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Open Security", @"Localizable", self.bundle, @"")];
-                    [alrt addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", self.bundle, @"Cancel")];
-
-                    [alrt beginSheetModalForWindow:self.mainView.window completionHandler:^(NSModalResponse returnCode) {
-                        if (returnCode == NSAlertFirstButtonReturn) {
-                            // TODO: implement
-                        }
-                    }];
-                }
-            }
             return YES;
+            /* Uncomment this to handle the returned values */
+//            // script returned an AppleScript result
+//            if (cAEList == [returnDescriptor descriptorType])
+//            {
+//                // result is a list of other descriptors
+//            }
+//            else
+//            {
+//                // coerce the result to the appropriate ObjC type
+//            }
         }
     }
     else
@@ -1077,9 +1061,9 @@ static void callbackHandleDevice(void *param,io_iterator_t iterator)
         // The driver should be enabled
         NSLog(@"Will Enable Driver...");
         script =
-            @"return do shell script \"\
+            @"do shell script \"\
             cd \\\"/Library/Extensions\\\"\n\
-            return kextload \\\"360Controller.kext\\\"\n\
+            kextload \\\"360Controller.kext\\\"\n\
             \" with administrator privileges\n";
 
     } else if (sender.state == NSOffState) {
